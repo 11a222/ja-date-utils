@@ -1,184 +1,184 @@
 let dateConfig = {
-  dateFormat: 'YYYY-MM-DD hh:mm:ss',// Ä¬ÈÏ·µ»ØµÄÊ±¼ä¸ñÊ½
-  dateAdd: 'YYYY-MM-DD', //Ê±¼ä¼Ó¼õ·µ»ØµÄÊ±¼ä¸ñÊ½
+    dateFormat: 'YYYY-MM-DD hh:mm:ss',// é»˜è®¤è¿”å›çš„æ—¶é—´æ ¼å¼
+    dateAdd: 'YYYY-MM-DD', //æ—¶é—´åŠ å‡è¿”å›çš„æ—¶é—´æ ¼å¼
 };
 const initDateConfig = (config)=>{
-  if (typeof (config) == 'string'){
-    dateConfig.dateFormat = config;
-    dateConfig.dateAdd = config;
-  } else if (typeof (config) == 'object'){
-    dateConfig = {//ºÏ²¢ÅäÖÃ
-      dateConfig, 
-      ...config
-    };
-  }
-}
-const toDate = (curStr)=> {//½«×Ö·û´®Ê±¼ä || Ê±¼ä´Á ×ª»¯ÎªÊ±¼äÀàĞÍ¡£     Î´´«ÖµÄ¬ÈÏÎªµ±Ç°Ê±¼ä
-  // curStr Îª "2019/06/04 01:59:59" ĞÎÊ½
-  var strTimeStamp = +curStr;
-  var timeDate;
-
-  if (curStr === '') {// Èç¹ûÊÇ¿Õ×Ö·û´®ÔòÎªµ±Ç°Ê±¼ä
-    timeDate = new Date();
-  } else if (isNaN(strTimeStamp)) {//Ê±¼äÀàĞÍ Èç "2019-08-10"
-    timeDate = new Date(curStr.replace(/-/g, "/"));
-  } else {//Ê±¼ä´Á  Èç£º"1559295683340"
-    timeDate = new Date(strTimeStamp);
-  }
-  if (timeDate.length === 12) {// 'Invalid Date'.length == 12 ÎŞĞ§ÈÕÆÚ   Ïà¶ÔÓÚ  timeDate=='Invalid Date' ĞÔÄÜÌáÉıÒ»±¶
-    return null;
-  } else {
-    return timeDate;
-  }
-};
-
-const dateFormat = (date, fmt)=> {//×Ö·û´®×ª»¯ÈÎÒâ¸ñÊ½Ê±¼ä,    Î´´«ÖµÄ¬ÈÏÎªµ±Ç°Ê±¼ä
-  // Àı: dateFormat('1559530562175', "YYYY-MM-DD hh:mm:ss.S ÖÜW(w) t.T monthÔÂ µÚQ¼¾¶È") 
-  // ·µ»ØÖµ:  "2019-06-03 10:56:02.175 am.ÉÏÎç ÖÜÒ»(1) ÁùÔÂ µÚ2¼¾¶È"
-  fmt = fmt || dateConfig.dateFormat;
-  var timeDate = toDate(date);
-  if (timeDate == null) return timeDate;
-
-  var week = { "0": 'ÈÕ', "1": 'Ò»', "2": '¶ş', "3": 'Èı', "4": 'ËÄ', "5": 'Îå', "6": 'Áù' };//ĞÇÆÚ -- ÖĞÎÄ
-  var weekNum = { "0": 7, "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6 };//ĞÇÆÚ -- Êı×Ö
-  var month = { "1": 'Ò»', "2": '¶ş', "3": 'Èı', "4": 'ËÄ', "5": 'Îå', "6": 'Áù', "7": 'Æß', "8": '°Ë', "9": '¾Å', "10": 'Ê®', "11": 'Ê®Ò»', "12": 'Ê®¶ş' };//ÔÂ·İ -- ÖĞÎÄ
-  var result = fmt
-    .replace(/YYYY/, timeDate.getFullYear()) //Äê
-    .replace(/Y/, timeDate.getFullYear()) //Äê
-    .replace(/MM/, repair0(timeDate.getMonth() + 1)) //ÔÂ·İ -- Êı×Ö
-    .replace(/M/, timeDate.getMonth() + 1) //ÔÂ·İ -- ²»²¹0
-    .replace(/month/, month[timeDate.getMonth() + 1]) //ÔÂ·İ -- ÖĞÎÄ
-    .replace(/DD/, repair0(timeDate.getDate())) //ÈÕ
-    .replace(/D/, timeDate.getDate()) //ÈÕ -- ²»²¹0
-    .replace(/hh/, repair0(timeDate.getHours())) //Ğ¡Ê±
-    .replace(/h/, timeDate.getHours()) //Ğ¡Ê± -- ²»²¹0
-    .replace(/mm/, repair0(timeDate.getMinutes())) //·Ö
-    .replace(/m/, timeDate.getMinutes()) //·Ö -- ²»²¹0
-    .replace(/ss/, repair0(timeDate.getSeconds())) //Ãë
-    .replace(/s/, timeDate.getSeconds()) //Ãë -- ²»²¹0
-    .replace(/S/, timeDate.getMilliseconds()) //ºÁÃë
-    .replace(/Q/, Math.floor((timeDate.getMonth() + 3) / 3))  //¼¾¶È
-    .replace(/w/, weekNum[timeDate.getDay()]) //ĞÇÆÚ -- Êı×Ö
-    .replace(/W/, week[timeDate.getDay()]) //ĞÇÆÚ -- ÖĞÎÄ
-    .replace(/t/, timeDate.getHours() < 12 ? 'am' : 'pm') //am: ÉÏÎç, pm: ÏÂÎç
-    .replace(/T/, timeDate.getHours() < 12 ? 'ÉÏÎç' : 'ÏÂÎç') //am: ÉÏÎç, pm: ÏÂÎç
-
-  function repair0(value) {//Ğ¡ÓÚ10 ²¹0
-    if (value < 10) return '0' + value;
-    else return value;
-  }
-  return result;
-};
-const dateAdd = function (date, num, type, fmt) {//ÊıÁ¿£¬ÒªÔö¼õµÄµ¥Î»£¬·µ»Ø¸ñÊ½
-  // Àı£ºdateAdd("1559530562175", 2,'DD', 'YYYY-MM-DD')
-  // ·µ»ØÖµ:  "2019-06-05"
-  type = type || 'DD';
-  fmt = fmt || dateConfig.dateAdd;
-  var timeDate = toDate(date);
-  if (timeDate == null) return timeDate;
-  num = +num;//Èç¹ûÊÇ×Ö·û´®£¬×ª³ÉÊı×Ö
-  if (type == 'ss') { //Ãë
-    timeDate.setSeconds(timeDate.getSeconds() + num);
-  } else if (type == 'mm') { //·Ö
-    timeDate.setMinutes(timeDate.getMinutes() + num);
-  } else if (type == 'hh') { //Ğ¡Ê±
-    timeDate.setHours(timeDate.getHours() + num);
-  } else if (type == 'w') { //ÖÜ
-    timeDate.setDate(timeDate.getDate() + (7 * num));
-  } else if (type == 'DD') { //Ìì
-    timeDate.setDate(timeDate.getDate() + num);
-  } else if (type == 'MM') { //ÔÂ
-    timeDate.setMonth(timeDate.getMonth() + num);
-  } else if (type == 'YYYY') { //Äê
-    timeDate.setYear(timeDate.getFullYear() + num);
-  }
-  return dateFormat(timeDate, fmt);
-}
-const dateDiff = function (parame) {// ¼ÆËãÊ±¼ä²î
-  var result = '', config = {}, timeDate, targetTime;
-  if (typeof (parame) == 'string') {
-    targetTime = toDate(parame); // ĞèÒª¶Ô±ÈµÄÊ±¼ä
-    timeDate = new Date(); //¡¡Ä¿±êÊ±¼ä  Ä¬ÈÏµ±Ç°Ê±¼ä
-  } else if (typeof (parame) == 'object') {
-    config = parame || {};
-    targetTime = toDate(config.date || new Date()); // ĞèÒª¶Ô±ÈµÄÊ±¼ä
-    timeDate = toDate(config.dateTarget || new Date()); //¡¡Ä¿±êÊ±¼ä  Ä¬ÈÏµ±Ç°Ê±¼ä
-  }
-  
-
-  var second = 1000;
-  var minute = 1000 * 60;   //°Ñ·Ö£¬Ê±£¬Ìì£¬ÖÜ£¬ÔÂ£¬Äê ÓÃºÁÃë±íÊ¾
-  var hour = minute * 60;
-  var day = hour * 24;
-  var week = day * 7;
-  var month = day * 30;
-  var year = month * 12;
-
-  var diffValueOld = timeDate - targetTime;//Ê±¼ä²î
-  var diffType = diffValueOld > 0 ? "Ç°" : "ºó";
-  var diffValue = Math.abs(diffValueOld);//È¡¾ø¶ÔÖµ
-  var seconC = diffType / second; //¼ÆËãÊ±¼ä²îµÄÃë£¬·Ö£¬Ê±£¬Ìì£¬ÖÜ£¬ÔÂ£¬Äê
-  var minC = diffValue / minute;
-  var hourC = diffValue / hour;
-  var dayC = diffValue / day;
-  var weekC = diffValue / week;
-  var monthC = diffValue / month;
-  var yearC = diffValue / year;
-
-  function isSameDay(type, timeDate, targetTime) {//ÊÇ·ñÍ¬Ò»Ìì
-    var diff = 0;
-    if (type == 'today') {
-      diff = 0;
-    } else if (type == 'yesterday') {
-      diff = 24 * 3600 * 1000;
+    if (typeof (config) == 'string'){
+        dateConfig.dateFormat = config;
+        dateConfig.dateAdd = config;
+    } else if (typeof (config) == 'object'){
+        dateConfig = {//åˆå¹¶é…ç½®
+            ...dateConfig,
+            ...config
+        };
     }
-    var today = new Date(timeDate.getFullYear(), timeDate.getMonth(), timeDate.getDate()).getTime(); //µ±Ç°Ê±¼ä 00:00:00
-    var targetDay = new Date(targetTime.getFullYear(), targetTime.getMonth(), targetTime.getDate()).getTime(); //Ä¿±êÊ±¼ä 00:00:000
-    return Math.abs(targetDay - today) == diff;
-  }
-  if (isSameDay("today", timeDate, targetTime)) {//½ñÌì
-    if (minC >= 1 && minC < 60) {
-      result = parseInt(minC) + "·ÖÖÓ" + diffType;
-    } else if (hourC >= 1 && hourC < 24) {
-      result = parseInt(hourC) + "Ğ¡Ê±" + diffType;
+}
+const toDate = (curStr)=> {//å°†å­—ç¬¦ä¸²æ—¶é—´ || æ—¶é—´æˆ³ è½¬åŒ–ä¸ºæ—¶é—´ç±»å‹ã€‚     æœªä¼ å€¼é»˜è®¤ä¸ºå½“å‰æ—¶é—´
+    // curStr ä¸º "2019/06/04 01:59:59" å½¢å¼
+    var strTimeStamp = +curStr;
+    var timeDate;
+
+    if (curStr === '') {// å¦‚æœæ˜¯ç©ºå­—ç¬¦ä¸²åˆ™ä¸ºå½“å‰æ—¶é—´
+        timeDate = new Date();
+    } else if (isNaN(strTimeStamp)) {//æ—¶é—´ç±»å‹ å¦‚ "2019-08-10"
+        timeDate = new Date(curStr.replace(/-/g, "/"));
+    } else {//æ—¶é—´æˆ³  å¦‚ï¼š"1559295683340"
+        timeDate = new Date(strTimeStamp);
+    }
+    if (timeDate.length === 12) {// 'Invalid Date'.length == 12 æ— æ•ˆæ—¥æœŸ   ç›¸å¯¹äº  timeDate=='Invalid Date' æ€§èƒ½æå‡ä¸€å€
+        return null;
     } else {
-      result = "¸Õ¸Õ";
+        return timeDate;
     }
-  } else if (isSameDay("yesterday", timeDate, targetTime)) {
-    result = diffValueOld > 0 ? "×òÌì" : "Ã÷Ìì";
-  } else if (dayC >= 2 && dayC < 7) {
-    result = parseInt(dayC) + "Ìì" + diffType;
-  } else if (weekC >= 1 && weekC < 30 / 7) {
-    result = parseInt(weekC) + "ÖÜ" + diffType;
-  } else if (monthC >= 1 && monthC < 12) {
-    result = parseInt(monthC) + "ÔÂ" + diffType;
-  } else if (yearC >= 1) {
-    result = parseInt(yearC) + "Äê" + diffType;
-  } else {
-    result = dateFormat(targetTime, config.dateFormat);
-  }
-  if (config.dateMaxValue) {//³¬¹ıÖ¸¶¨Ê±³¤ÔòÖ±½ÓÏÔÊ¾Ê±¼ä
-    let condition = [config.dateMaxType == 'YYYY' && yearC > config.dateMaxValue,
-      config.dateMaxType == 'MM' && monthC > config.dateMaxValue,
-      config.dateMaxType == 'DD' && dayC > config.dateMaxValue,
-      config.dateMaxType == 'w' && weekC > config.dateMaxValue,
-      config.dateMaxType == 'hh' && hourC > config.dateMaxValue,
-      config.dateMaxType == 'mm' && minC > config.dateMaxValue,
-      config.dateMaxType == 'ss' && second > config.dateMaxValue,
-    ]
-    for (let item of condition){
-      if (item) {
+};
+
+const dateFormat = (date, fmt)=> {//å­—ç¬¦ä¸²è½¬åŒ–ä»»æ„æ ¼å¼æ—¶é—´,    æœªä¼ å€¼é»˜è®¤ä¸ºå½“å‰æ—¶é—´
+    // ä¾‹: dateFormat('1559530562175', "YYYY-MM-DD hh:mm:ss.S å‘¨W(w) t.T monthæœˆ ç¬¬Qå­£åº¦")
+    // è¿”å›å€¼:  "2019-06-03 10:56:02.175 am.ä¸Šåˆ å‘¨ä¸€(1) å…­æœˆ ç¬¬2å­£åº¦"
+    fmt = fmt || dateConfig.dateFormat;
+    var timeDate = toDate(date);
+    if (timeDate == null) return timeDate;
+
+    var week = { "0": 'æ—¥', "1": 'ä¸€', "2": 'äºŒ', "3": 'ä¸‰', "4": 'å››', "5": 'äº”', "6": 'å…­' };//æ˜ŸæœŸ -- ä¸­æ–‡
+    var weekNum = { "0": 7, "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6 };//æ˜ŸæœŸ -- æ•°å­—
+    var month = { "1": 'ä¸€', "2": 'äºŒ', "3": 'ä¸‰', "4": 'å››', "5": 'äº”', "6": 'å…­', "7": 'ä¸ƒ', "8": 'å…«', "9": 'ä¹', "10": 'å', "11": 'åä¸€', "12": 'åäºŒ' };//æœˆä»½ -- ä¸­æ–‡
+    var result = fmt
+        .replace(/YYYY/, timeDate.getFullYear()) //å¹´
+        .replace(/Y/, timeDate.getFullYear()) //å¹´
+        .replace(/MM/, repair0(timeDate.getMonth() + 1)) //æœˆä»½ -- æ•°å­—
+        .replace(/M/, timeDate.getMonth() + 1) //æœˆä»½ -- ä¸è¡¥0
+        .replace(/month/, month[timeDate.getMonth() + 1]) //æœˆä»½ -- ä¸­æ–‡
+        .replace(/DD/, repair0(timeDate.getDate())) //æ—¥
+        .replace(/D/, timeDate.getDate()) //æ—¥ -- ä¸è¡¥0
+        .replace(/hh/, repair0(timeDate.getHours())) //å°æ—¶
+        .replace(/h/, timeDate.getHours()) //å°æ—¶ -- ä¸è¡¥0
+        .replace(/mm/, repair0(timeDate.getMinutes())) //åˆ†
+        .replace(/m/, timeDate.getMinutes()) //åˆ† -- ä¸è¡¥0
+        .replace(/ss/, repair0(timeDate.getSeconds())) //ç§’
+        .replace(/s/, timeDate.getSeconds()) //ç§’ -- ä¸è¡¥0
+        .replace(/S/, timeDate.getMilliseconds()) //æ¯«ç§’
+        .replace(/Q/, Math.floor((timeDate.getMonth() + 3) / 3))  //å­£åº¦
+        .replace(/w/, weekNum[timeDate.getDay()]) //æ˜ŸæœŸ -- æ•°å­—
+        .replace(/W/, week[timeDate.getDay()]) //æ˜ŸæœŸ -- ä¸­æ–‡
+        .replace(/t/, timeDate.getHours() < 12 ? 'am' : 'pm') //am: ä¸Šåˆ, pm: ä¸‹åˆ
+        .replace(/T/, timeDate.getHours() < 12 ? 'ä¸Šåˆ' : 'ä¸‹åˆ') //am: ä¸Šåˆ, pm: ä¸‹åˆ
+
+    function repair0(value) {//å°äº10 è¡¥0
+        if (value < 10) return '0' + value;
+        else return value;
+    }
+    return result;
+};
+const dateAdd = function (date, num, type, fmt) {//æ•°é‡ï¼Œè¦å¢å‡çš„å•ä½ï¼Œè¿”å›æ ¼å¼
+    // ä¾‹ï¼šdateAdd("1559530562175", 2,'DD', 'YYYY-MM-DD')
+    // è¿”å›å€¼:  "2019-06-05"
+    type = type || 'DD';
+    fmt = fmt || dateConfig.dateAdd;
+    var timeDate = toDate(date);
+    if (timeDate == null) return timeDate;
+    num = +num;//å¦‚æœæ˜¯å­—ç¬¦ä¸²ï¼Œè½¬æˆæ•°å­—
+    if (type == 'ss') { //ç§’
+        timeDate.setSeconds(timeDate.getSeconds() + num);
+    } else if (type == 'mm') { //åˆ†
+        timeDate.setMinutes(timeDate.getMinutes() + num);
+    } else if (type == 'hh') { //å°æ—¶
+        timeDate.setHours(timeDate.getHours() + num);
+    } else if (type == 'w') { //å‘¨
+        timeDate.setDate(timeDate.getDate() + (7 * num));
+    } else if (type == 'DD') { //å¤©
+        timeDate.setDate(timeDate.getDate() + num);
+    } else if (type == 'MM') { //æœˆ
+        timeDate.setMonth(timeDate.getMonth() + num);
+    } else if (type == 'YYYY') { //å¹´
+        timeDate.setYear(timeDate.getFullYear() + num);
+    }
+    return dateFormat(timeDate, fmt);
+}
+const dateDiff = function (parame) {// è®¡ç®—æ—¶é—´å·®
+    var result = '', config = {}, timeDate, targetTime;
+    if (typeof (parame) == 'string') {
+        targetTime = toDate(parame); // éœ€è¦å¯¹æ¯”çš„æ—¶é—´
+        timeDate = new Date(); //ã€€ç›®æ ‡æ—¶é—´  é»˜è®¤å½“å‰æ—¶é—´
+    } else if (typeof (parame) == 'object') {
+        config = parame || {};
+        targetTime = toDate(config.date || new Date()); // éœ€è¦å¯¹æ¯”çš„æ—¶é—´
+        timeDate = toDate(config.dateTarget || new Date()); //ã€€ç›®æ ‡æ—¶é—´  é»˜è®¤å½“å‰æ—¶é—´
+    }
+
+
+    var second = 1000;
+    var minute = 1000 * 60;   //æŠŠåˆ†ï¼Œæ—¶ï¼Œå¤©ï¼Œå‘¨ï¼Œæœˆï¼Œå¹´ ç”¨æ¯«ç§’è¡¨ç¤º
+    var hour = minute * 60;
+    var day = hour * 24;
+    var week = day * 7;
+    var month = day * 30;
+    var year = month * 12;
+
+    var diffValueOld = timeDate - targetTime;//æ—¶é—´å·®
+    var diffType = diffValueOld > 0 ? "å‰" : "å";
+    var diffValue = Math.abs(diffValueOld);//å–ç»å¯¹å€¼
+    var seconC = diffType / second; //è®¡ç®—æ—¶é—´å·®çš„ç§’ï¼Œåˆ†ï¼Œæ—¶ï¼Œå¤©ï¼Œå‘¨ï¼Œæœˆï¼Œå¹´
+    var minC = diffValue / minute;
+    var hourC = diffValue / hour;
+    var dayC = diffValue / day;
+    var weekC = diffValue / week;
+    var monthC = diffValue / month;
+    var yearC = diffValue / year;
+
+    function isSameDay(type, timeDate, targetTime) {//æ˜¯å¦åŒä¸€å¤©
+        var diff = 0;
+        if (type == 'today') {
+            diff = 0;
+        } else if (type == 'yesterday') {
+            diff = 24 * 3600 * 1000;
+        }
+        var today = new Date(timeDate.getFullYear(), timeDate.getMonth(), timeDate.getDate()).getTime(); //å½“å‰æ—¶é—´ 00:00:00
+        var targetDay = new Date(targetTime.getFullYear(), targetTime.getMonth(), targetTime.getDate()).getTime(); //ç›®æ ‡æ—¶é—´ 00:00:000
+        return Math.abs(targetDay - today) == diff;
+    }
+    if (isSameDay("today", timeDate, targetTime)) {//ä»Šå¤©
+        if (minC >= 1 && minC < 60) {
+            result = parseInt(minC) + "åˆ†é’Ÿ" + diffType;
+        } else if (hourC >= 1 && hourC < 24) {
+            result = parseInt(hourC) + "å°æ—¶" + diffType;
+        } else {
+            result = "åˆšåˆš";
+        }
+    } else if (isSameDay("yesterday", timeDate, targetTime)) {
+        result = diffValueOld > 0 ? "æ˜¨å¤©" : "æ˜å¤©";
+    } else if (dayC >= 2 && dayC < 7) {
+        result = parseInt(dayC) + "å¤©" + diffType;
+    } else if (weekC >= 1 && weekC < 30 / 7) {
+        result = parseInt(weekC) + "å‘¨" + diffType;
+    } else if (monthC >= 1 && monthC < 12) {
+        result = parseInt(monthC) + "æœˆ" + diffType;
+    } else if (yearC >= 1) {
+        result = parseInt(yearC) + "å¹´" + diffType;
+    } else {
         result = dateFormat(targetTime, config.dateFormat);
-        break;
-      };
     }
-  }
-  return result;
+    if (config.dateMaxValue) {//è¶…è¿‡æŒ‡å®šæ—¶é•¿åˆ™ç›´æ¥æ˜¾ç¤ºæ—¶é—´
+        let condition = [config.dateMaxType == 'YYYY' && yearC > config.dateMaxValue,
+            config.dateMaxType == 'MM' && monthC > config.dateMaxValue,
+            config.dateMaxType == 'DD' && dayC > config.dateMaxValue,
+            config.dateMaxType == 'w' && weekC > config.dateMaxValue,
+            config.dateMaxType == 'hh' && hourC > config.dateMaxValue,
+            config.dateMaxType == 'mm' && minC > config.dateMaxValue,
+            config.dateMaxType == 'ss' && second > config.dateMaxValue,
+        ]
+        for (let item of condition){
+            if (item) {
+                result = dateFormat(targetTime, config.dateFormat);
+                break;
+            };
+        }
+    }
+    return result;
 };
 
 module.exports = {
-  initDateConfig, // ³õÊ¼»¯Ä¬ÈÏÅäÖÃ
-  dateFormat, // ¸ñÊ½»¯Ê±¼ä
-  dateAdd, // Ê±¼äÔö¼õ
-  dateDiff, // ¼ÆËãÊ±¼ä²î
+    initDateConfig, // åˆå§‹åŒ–é»˜è®¤é…ç½®
+    dateFormat, // æ ¼å¼åŒ–æ—¶é—´
+    dateAdd, // æ—¶é—´å¢å‡
+    dateDiff, // è®¡ç®—æ—¶é—´å·®
 }

@@ -27,8 +27,12 @@ dateUtils.initDateConfig({ // 修改默认时间格式
 dateUtils.initDateConfig('YYYY-MM-DD hh:mm:ss'); // 对所有日期格式都生效
 ~~~
 
+##版本更新
+>1.1.2 解决无法某些配置不生效
+>1.1.2 解决中文乱码
+
 ## 功能
-1、  格式化时间： dateFormat (date, fmt)|
+1、  格式化时间： dateFormat (date, fmt)
 >功能描述：传入时间，返回指定格式  
 
 | 参数   | 类型   | 默认 | 必传 | 描述        |
@@ -50,7 +54,6 @@ dateUtils.dateFormat('1559530562175', "YYYY-MM-DD hh:mm:ss.S 周W(w) t.T month�
 dateUtils.dateFormat('2019-06-03 10:56:02', "YYYY年MM月DD日 hh:mm:ss")
 // 结果：2019年06月03日 10:56:02
 ~~~
->本插件使用的所有时间可以是任意格式的。如：new Date(), '1559530562175', 1559530562175, '2019-06-03 10:56:02'
 
 2、  时间增减： dateAdd (date, num, type, fmt)
 >功能描述：传入时间，对时间进行增减操作
