@@ -35,6 +35,9 @@ dateUtils.initDateConfig('YYYY-MM-DD hh:mm:ss'); // 对所有日期格式都生�
 | -------| ------ | ------- | ------- | ---------|
 | date   | number / string / date | new Date()| false | 需格式化的时间|
 | fmt    | string                 | #3B78E7 | false | 需的时间格式([类型](#时间类型))|
+
+
+
 #####例子
 ~~~
 dateUtils.dateFormat('1559530562175')
@@ -58,6 +61,9 @@ dateUtils.dateFormat('2019-06-03 10:56:02', "YYYY年MM月DD日 hh:mm:ss")
 | num    | number |       |     true   |增减的数量，正数为增，负数为减|  
 | type    | string |       |    true   | 增减的[类型](#时间类型)|  
 | fmt    | string | YYYY-MM-DD hh:mm:ss |   false    | 返回的时间格式([类型](#时间类型))|  
+  
+  
+  
 #####例子
 ~~~
 dateUtils.dateAdd("2019-06-03", 2, 'YYYY', 'YYYY-MM-DD')
@@ -74,18 +80,23 @@ dateUtils.dateAdd("2019-06-03", -3, 'DD', 'YYYY-MM-DD')
 ~~~
 3、 计算时间差：dateDiff  (parame)
 >功能描述：传入时间，计算与当前时间的差值
+
 #####parame参数说明 -- json类型
 | 参数       | 类型   | 默认 |  必传      |  描述        |
 | -----------| ------ | ------ | ----| ---------|
 | date       | number / string / date |     |  true   | 需要对比的时间|
 | dateTarget | number / string / date | new Date()|    |  目标时间(以此为对比标准)|  
 | dateMaxType| string |       |     | 相差超过该数量单位的后显示原时间([类型](#时间类型))|  
-| fmt    | string | YYYY-MM-DD hh:mm:ss |     | 返回的时间格式([类型](#时间类型))|  
+| fmt    | string | YYYY-MM-DD hh:mm:ss |     | 返回的时间格式([类型](#时间类型))|   
+
+
 
 #####parame参数说明 -- string类型
 | 参数       | 类型   | 默认 |  必传      |  描述        |
 | -----------| ------ | ------ | ----| ---------|
-| parame     | number / string / date |     |  true   | 需要对比的时间 - 相当于parame.date|
+| parame     | number / string / date |     |  true   | 需要对比的时间 - 相当于parame.date|   
+
+
 
 #####例子
 ~~~
@@ -148,4 +159,3 @@ dateUtils.dateDiff({
 | t          | 时段 &nbsp;&nbsp;(am，pm)|   am |
 | T          | 时段 &nbsp;&nbsp;(上午，下午)|   上午 |
 
-# ja-date-utils
