@@ -1,0 +1,15 @@
+{
+  "name": "ja-date-utils",
+  "version": "1.0.0",
+  "description": "时间类工具",
+  "main": "ja-date-utils.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "\u0016https://github.com/11a222/ja-date-utils.git"
+  },
+  "author": "jack_lin",
+  "license": "ISC"
+}
