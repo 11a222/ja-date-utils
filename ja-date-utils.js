@@ -7,22 +7,20 @@ const initDateConfig = (config)=>{
         dateConfig.dateFormat = config;
         dateConfig.dateAdd = config;
     } else if (typeof (config) == 'object'){
-        dateConfig = {//合并配置
-            ...dateConfig,
-            ...config
-        };
+        dateConfig = Object.assign(dateConfig, config);//合并配置
     }
 }
 const toDate = (curStr)=> {//将字符串时间 || 时间戳 转化为时间类型。     未传值默认为当前时间
     // curStr 为 "2019/06/04 01:59:59" 形式
-    var strTimeStamp = +curStr;
-    var timeDate;
+    let strTimeStamp = +curStr;
+    let timeDate;
 
     if (curStr === '') {// 如果是空字符串则为当前时间
         timeDate = new Date();
     } else if (isNaN(strTimeStamp)) {//时间类型 如 "2019-08-10"
         timeDate = new Date(curStr.replace(/-/g, "/"));
     } else {//时间戳  如："1559295683340"
+        (""+strTimeStamp).length == 10 && (strTimeStamp*=1000);
         timeDate = new Date(strTimeStamp);
     }
     if (timeDate.length === 12) {// 'Invalid Date'.length == 12 无效日期   相对于  timeDate=='Invalid Date' 性能提升一倍
@@ -36,13 +34,13 @@ const dateFormat = (date, fmt)=> {//字符串转化任意格式时间,    未传
     // 例: dateFormat('1559530562175', "YYYY-MM-DD hh:mm:ss.S 周W(w) t.T month月 第Q季度")
     // 返回值:  "2019-06-03 10:56:02.175 am.上午 周一(1) 六月 第2季度"
     fmt = fmt || dateConfig.dateFormat;
-    var timeDate = toDate(date);
+    let timeDate = toDate(date);
     if (timeDate == null) return timeDate;
 
-    var week = { "0": '日', "1": '一', "2": '二', "3": '三', "4": '四', "5": '五', "6": '六' };//星期 -- 中文
-    var weekNum = { "0": 7, "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6 };//星期 -- 数字
-    var month = { "1": '一', "2": '二', "3": '三', "4": '四', "5": '五', "6": '六', "7": '七', "8": '八', "9": '九', "10": '十', "11": '十一', "12": '十二' };//月份 -- 中文
-    var result = fmt
+    let week = { "0": '日', "1": '一', "2": '二', "3": '三', "4": '四', "5": '五', "6": '六' };//星期 -- 中文
+    let weekNum = { "0": 7, "1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6 };//星期 -- 数字
+    let month = { "1": '一', "2": '二', "3": '三', "4": '四', "5": '五', "6": '六', "7": '七', "8": '八', "9": '九', "10": '十', "11": '十一', "12": '十二' };//月份 -- 中文
+    let result = fmt
         .replace(/YYYY/, timeDate.getFullYear()) //年
         .replace(/Y/, timeDate.getFullYear()) //年
         .replace(/MM/, repair0(timeDate.getMonth() + 1)) //月份 -- 数字
@@ -74,7 +72,7 @@ const dateAdd = function (date, num, type, fmt) {//数量，要增减的单位�
     // 返回值:  "2019-06-05"
     type = type || 'DD';
     fmt = fmt || dateConfig.dateAdd;
-    var timeDate = toDate(date);
+    let timeDate = toDate(date);
     if (timeDate == null) return timeDate;
     num = +num;//如果是字符串，转成数字
     if (type == 'ss') { //秒
@@ -95,7 +93,7 @@ const dateAdd = function (date, num, type, fmt) {//数量，要增减的单位�
     return dateFormat(timeDate, fmt);
 }
 const dateDiff = function (parame) {// 计算时间差
-    var result = '', config = {}, timeDate, targetTime;
+    let result = '', config = {}, timeDate, targetTime;
     if (typeof (parame) == 'string') {
         targetTime = toDate(parame); // 需要对比的时间
         timeDate = new Date(); //　目标时间  默认当前时间
@@ -106,34 +104,34 @@ const dateDiff = function (parame) {// 计算时间差
     }
 
 
-    var second = 1000;
-    var minute = 1000 * 60;   //把分，时，天，周，月，年 用毫秒表示
-    var hour = minute * 60;
-    var day = hour * 24;
-    var week = day * 7;
-    var month = day * 30;
-    var year = month * 12;
+    let second = 1000;
+    let minute = 1000 * 60;   //把分，时，天，周，月，年 用毫秒表示
+    let hour = minute * 60;
+    let day = hour * 24;
+    let week = day * 7;
+    let month = day * 30;
+    let year = month * 12;
 
-    var diffValueOld = timeDate - targetTime;//时间差
-    var diffType = diffValueOld > 0 ? "前" : "后";
-    var diffValue = Math.abs(diffValueOld);//取绝对值
-    var seconC = diffType / second; //计算时间差的秒，分，时，天，周，月，年
-    var minC = diffValue / minute;
-    var hourC = diffValue / hour;
-    var dayC = diffValue / day;
-    var weekC = diffValue / week;
-    var monthC = diffValue / month;
-    var yearC = diffValue / year;
+    let diffValueOld = timeDate - targetTime;//时间差
+    let diffType = diffValueOld > 0 ? "前" : "后";
+    let diffValue = Math.abs(diffValueOld);//取绝对值
+    let seconC = diffType / second; //计算时间差的秒，分，时，天，周，月，年
+    let minC = diffValue / minute;
+    let hourC = diffValue / hour;
+    let dayC = diffValue / day;
+    let weekC = diffValue / week;
+    let monthC = diffValue / month;
+    let yearC = diffValue / year;
 
     function isSameDay(type, timeDate, targetTime) {//是否同一天
-        var diff = 0;
+        let diff = 0;
         if (type == 'today') {
             diff = 0;
         } else if (type == 'yesterday') {
             diff = 24 * 3600 * 1000;
         }
-        var today = new Date(timeDate.getFullYear(), timeDate.getMonth(), timeDate.getDate()).getTime(); //当前时间 00:00:00
-        var targetDay = new Date(targetTime.getFullYear(), targetTime.getMonth(), targetTime.getDate()).getTime(); //目标时间 00:00:000
+        let today = new Date(timeDate.getFullYear(), timeDate.getMonth(), timeDate.getDate()).getTime(); //当前时间 00:00:00
+        let targetDay = new Date(targetTime.getFullYear(), targetTime.getMonth(), targetTime.getDate()).getTime(); //目标时间 00:00:000
         return Math.abs(targetDay - today) == diff;
     }
     if (isSameDay("today", timeDate, targetTime)) {//今天
@@ -175,10 +173,51 @@ const dateDiff = function (parame) {// 计算时间差
     }
     return result;
 };
+const isToDay = (date, dateTarget = new Date())=>{ // 是否今天
+    return dateFormat(date, 'YYYY-MM-DD') == dateFormat(dateTarget, 'YYYY-MM-DD');
+}
+const isInDate = (date, num = 1, type = 'DD', dateTarget = new Date())=>{ // 是否在时间范围内
+    let second = 1000;
+    let minute = 1000 * 60;   //把分，时，天，周，月，年 用毫秒表示
+    let hour = minute * 60;
+    let day = hour * 24;
+    let week = day * 7;
+    let month = day * 30;
+    let year = month * 12;
 
+    let diffValueOld = toDate(dateTarget) - toDate(date);//时间差
+    if(diffValueOld<0){return false};
+    let diffValue = Math.abs(diffValueOld);//取绝对值
+    let seconC = diffValue / second; //计算时间差的秒，分，时，天，周，月，年
+    let minC = diffValue / minute;
+    let hourC = diffValue / hour;
+    let dayC = diffValue / day;
+    let weekC = diffValue / week;
+    let monthC = diffValue / month;
+    let yearC = diffValue / year;
+
+    let condition = [type == 'YYYY' && yearC <= num,
+        type == 'MM' && monthC <= num,
+        type == 'DD' && dayC <= num,
+        type == 'w' && weekC <= num,
+        type == 'hh' && hourC <= num,
+        type == 'mm' && minC <= num,
+        type == 'ss' && seconC <= num,
+    ]
+    let flag = false;
+    for (let item of condition){
+        if (item) {
+            flag = true
+            break;
+        };
+    }
+    return flag;
+}
 module.exports = {
     initDateConfig, // 初始化默认配置
     dateFormat, // 格式化时间
     dateAdd, // 时间增减
     dateDiff, // 计算时间差
+    isInDate, // 是否在时间范围内
+    isToDay, // 是否今天
 }
