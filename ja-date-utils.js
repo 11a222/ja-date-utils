@@ -173,7 +173,7 @@ const dateDiff = function (parame) {// 计算时间差
     }
     return result;
 };
-const isToDay = (date, dateTarget = new Date())=>{ // 是否今天
+const isToday = (date, dateTarget = new Date())=>{ // 是否今天
     return dateFormat(date, 'YYYY-MM-DD') == dateFormat(dateTarget, 'YYYY-MM-DD');
 }
 const isInDate = (date, num = 1, type = 'DD', dateTarget = new Date())=>{ // 是否在时间范围内
@@ -219,5 +219,5 @@ module.exports = {
     dateAdd, // 时间增减
     dateDiff, // 计算时间差
     isInDate, // 是否在时间范围内
-    isToDay, // 是否今天
+    isToday, // 是否今天
 }

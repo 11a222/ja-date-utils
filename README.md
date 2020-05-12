@@ -3,7 +3,7 @@
 #### 2：dateAdd // 时间增减
 #### 3：dateDiff // 计算时间差
 #### 4：isInDate // 是否在时间范围内
-#### 5：isToDay // 是否今天
+#### 5：isToday // 是否今天
 ## 安装
 ~~~
 npm install ja-date-utils --save
@@ -29,7 +29,9 @@ dateUtils.initDateConfig('YYYY-MM-DD hh:mm:ss'); // 对所有日期格式都生�
 ~~~
 
 ##版本更新
->1.2.0 新增 isToDay 方法（是否今天）  
+>1.2.2 修改isToDay方法为isToday  
+>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;补充dateDiff方法文档遗漏  
+>1.2.0 新增 isToday 方法（是否今天）  
 >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;新增 isInDate 方法（是否在时间范围内）  
 >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;新增支持10位时间戳  
 >1.1.5 解决无法部分配置不生效  
@@ -42,7 +44,7 @@ dateUtils.initDateConfig('YYYY-MM-DD hh:mm:ss'); // 对所有日期格式都生�
 | 参数   | 类型   | 默认 | 必传 | 描述        |
 | -------| ------ | ------- | ------- | ---------|
 | date   | number / string / date | new Date()| false | 需格式化的时间|
-| fmt    | string                 | #3B78E7 | false | 需的时间格式([类型](#时间类型))|
+| fmt    | string                 | YYYY-MM-DD hh:mm:ss | false | 需的时间格式([类型](#时间类型))|
 
 
 
@@ -93,8 +95,9 @@ dateUtils.dateAdd("2019-06-03", -3, 'DD', 'YYYY-MM-DD')
 | -----------| ------ | ------ | ----| ---------|
 | date       | number / string / date |     |  true   | 需要对比的时间|
 | dateTarget | number / string / date | new Date()|    |  目标时间(以此为对比标准)|  
+| dateMaxValue| number |       |     | 相差超过该数量单位的后显示原时间)|  
 | dateMaxType| string |       |     | 相差超过该数量单位的后显示原时间([类型](#时间类型))|  
-| fmt    | string | YYYY-MM-DD hh:mm:ss |     | 返回的时间格式([类型](#时间类型))|   
+| dateFormat    | string | YYYY-MM-DD hh:mm:ss |     | 返回的时间格式([类型](#时间类型))|   
 
 
 
@@ -141,7 +144,7 @@ dateUtils.dateDiff({
 // 结果：2019-04-07
 
 ~~~
-4、  是否今天： isToDay (date, dateTarget)
+4、  是否今天： isToday (date, dateTarget)
 >功能描述：传入时间，返回布尔值
 
 | 参数   | 类型   | 默认 | 必传        | 描述        |
@@ -152,13 +155,13 @@ dateUtils.dateDiff({
 #####例子
 ~~~
 注：对比的时间的当前系统时间：2020-04-28 11:11:11
-dateUtils.isToDay('2020-4-28')
+dateUtils.isToday('2020-4-28')
 // 结果：true
 
-dateUtils.isToDay('2020-4-27')
+dateUtils.isToday('2020-4-27')
 // 结果：false
 
-dateUtils.isToDay('2020-4-28', '2020-4-28')
+dateUtils.isToday('2020-4-28', '2020-4-28')
 // 结果：true
 ~~~
 
